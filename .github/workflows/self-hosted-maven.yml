@@ -1,0 +1,36 @@
+name: Java Maven CI - Self-Hosted
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify Java and Maven version
+        run: |
+          java -version
+          mvn -version
+
+      - name: Maven Clean Compile
+        run: mvn clean compile
+
+      - name: Maven Run Tests
+        run: mvn test
+
+      - name: Maven Package (Create JAR)
+        run: mvn clean package -DskipTests
+
+      - name: Show build output
+        run: |
+          echo "Build completed on self-hosted runner"
+          echo "Hostname: $(hostname)"
+          echo "User: $(whoami)"
+          ls -lh target/
